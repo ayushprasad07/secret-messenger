@@ -1,12 +1,12 @@
 import mongoose , {Schema, Document} from "mongoose";
 
 
-export interface Messsage extends Document{
+export interface Message extends Document{
     content : string,
     createdAt : Date,
 }
 
-const MessageSchema : Schema<Messsage> = new Schema({
+const MessageSchema : Schema<Message> = new Schema({
     content : {
         type : String,
         required : true,
@@ -26,7 +26,7 @@ export interface User extends Document{
     verificationCodeExpiry : Date;
     isVerified : boolean;
     isAcceptingMessages : boolean;
-    messages : Messsage[];
+    messages : Message[];
 }
 
 const UserSchema : Schema<User> = new Schema({
@@ -66,6 +66,5 @@ const UserSchema : Schema<User> = new Schema({
 })
 
 const UserModel = (mongoose.models.User as mongoose.Model<User>) || mongoose.model<User>("User", UserSchema);
-const MessageModel = (mongoose.models.Message as mongoose.Model<Messsage>) || mongoose.model<Messsage>("Message", MessageSchema);
 
-export {UserModel, MessageModel};
+export {UserModel};
