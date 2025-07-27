@@ -24,7 +24,7 @@ export async function POST(request : Request) {
         }
 
         const existingUserByEmail = await UserModel.findOne({email});
-        const verifyCode = Math.floor(Math.random() * (9999 - 1000 + 1) + 1000).toString();
+        const verifyCode = Math.floor(Math.random() * (999999 - 100000 + 1) + 100000).toString();
 
         if(existingUserByEmail){
             if(existingUserByEmail.isVerified){
