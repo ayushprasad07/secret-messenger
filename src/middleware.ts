@@ -1,5 +1,4 @@
 import { NextResponse, NextRequest } from 'next/server'
-export {default} from 'next-auth/middleware'
 import { getToken } from 'next-auth/jwt'
  
 
@@ -10,9 +9,8 @@ export async function middleware(request: NextRequest) {
     if (token && 
         (
             url.pathname.startsWith('/sign-in') ||
-            url.pathname.startsWith('/sign-un') ||
-            url.pathname.startsWith('/verify') ||
-            url.pathname.startsWith('/') 
+            url.pathname.startsWith('/sign-up') ||
+            url.pathname.startsWith('/verify') 
         )
     ) {
         return NextResponse.redirect(new URL('/dashboard', request.url))

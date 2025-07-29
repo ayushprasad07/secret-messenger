@@ -123,7 +123,7 @@ const page = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={isSubmitting} className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-8 py-3 rounded-full shadow-lg hover:shadow-xl cursor-pointer">
               {isSubmitting ? (
                 <>
                  <Loader className="mr-2 h-4 w-4 animate-spin"/>Please Wait
