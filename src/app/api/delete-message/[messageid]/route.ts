@@ -1,12 +1,13 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/options";
 import dbConnect from "@/lib/dbConnect";
 import { UserModel } from "@/model/User";
 import { User } from "next-auth";
 import mongoose from "mongoose";
+import { authOptions } from "../../auth/[...nextauth]/options";
 
 
-export async function GET(request : Request) {
+export async function DELETE(request : Request,params : {params : {messageid : string}}) {
+    const messageId = params.params.messageid;
     await dbConnect();
 
     const session = await getServerSession(authOptions);
@@ -21,25 +22,22 @@ export async function GET(request : Request) {
         })
     }
 
-    const userId = new mongoose.Types.ObjectId(user._id);
-
     try {
-        const user = await UserModel.aggregate([
-            { $match : {_id : userId}},
-            { $unwind : {path : "$messages", preserveNullAndEmptyArrays: true} },
-            { $sort : { "messages.createdAt" : -1}},
-            { $group : {
-                _id : "$_id",
+        const updatedResult = await UserModel.updateOne({
+            _id : user._id,
+            "messages._id" : new mongoose.Types.ObjectId(messageId)
+        }, {
+            $pull : {
                 messages : {
-                    $push : "$messages"
+                    _id : new mongoose.Types.ObjectId(messageId)
                 }
-            }}
-        ])
+            } 
+        })
 
-        if(!user || user.length === 0){
+        if(updatedResult.modifiedCount === 0){
             return Response.json({
                 success : false,
-                message : "User not found in database"
+                message : "Message not found or already deleted"
             },{
                 status : 404
             })
@@ -47,16 +45,18 @@ export async function GET(request : Request) {
 
         return Response.json({
             success : true,
-            message : "Messages fetched successfully",
-            messages : user[0].messages
+            message : "Message deleted successfully"
+        },{
+            status : 200
         })
     } catch (error) {
-        console.error("Error while fetching messages from database",error);
+        console.error("Error occured while deleting message",error);
         return Response.json({
             success : false,
-            message : "Error while fetching messages from database",
+            message : "Error occured while deleting message"
         },{
             status : 500
         })
     }
+    
 }
