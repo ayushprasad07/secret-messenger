@@ -8,9 +8,10 @@ import { NextRequest } from "next/server";
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { messageid: string } }
+  { params }: { params: Promise<{ messageid: string }> }
 ) {
-  const messageId = params.messageid;
+  // Await params as Next.js 15 expects
+  const { messageid } = await params;
 
   await dbConnect();
 
@@ -33,12 +34,12 @@ export async function DELETE(
     const updatedResult = await UserModel.updateOne(
       {
         _id: user._id,
-        "messages._id": new mongoose.Types.ObjectId(messageId),
+        "messages._id": new mongoose.Types.ObjectId(messageid),
       },
       {
         $pull: {
           messages: {
-            _id: new mongoose.Types.ObjectId(messageId),
+            _id: new mongoose.Types.ObjectId(messageid),
           },
         },
       }
