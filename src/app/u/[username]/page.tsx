@@ -15,7 +15,7 @@ import { toast } from 'sonner';
 import z from 'zod';
 
 
-const page = () => {
+const UserProfile = () => {
   const [suggestMessage, setSuggestMessage] = useState('');
   const [gettingMessage , setGettingMessage] = useState(false);
   const params = useParams();
@@ -131,4 +131,4 @@ const page = () => {
 }
 
 
-export default page
+export default UserProfile

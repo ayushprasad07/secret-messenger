@@ -17,7 +17,7 @@ import MessageCard from '@/components/MessageCard';
 import { User } from 'next-auth';
 
 
-const page = () => {
+const Dashboard = () => {
   const [messages,setMessages] = useState<Message[]>([]);
   const [isLoading,setIsLoading] = useState(false);
   const [isSwitchLoading,setIsSwitchLoading] = useState(false);
@@ -218,4 +218,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Dashboard
