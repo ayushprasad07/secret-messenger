@@ -6,59 +6,75 @@ import mongoose from "mongoose";
 import { authOptions } from "../../auth/[...nextauth]/options";
 import { NextRequest } from "next/server";
 
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { messageid: string } }
+) {
+  const messageId = params.messageid;
 
-export async function DELETE(request : NextRequest,context: { params: { messageid: string } }) {
-    const { messageid } = context.params;
-    const messageId = messageid;
-    await dbConnect();
+  await dbConnect();
 
-    const session = await getServerSession(authOptions);
-    const user : User = session?.user as User;
+  const session = await getServerSession(authOptions);
+  const user: User = session?.user as User;
 
-    if(!session || !session.user){
-        return Response.json({
-            success : false,
-            message : "User not authenticated"
-        },{
-            status : 401
-        })
-    }
+  if (!session || !session.user) {
+    return Response.json(
+      {
+        success: false,
+        message: "User not authenticated",
+      },
+      {
+        status: 401,
+      }
+    );
+  }
 
-    try {
-        const updatedResult = await UserModel.updateOne({
-            _id : user._id,
-            "messages._id" : new mongoose.Types.ObjectId(messageId)
-        }, {
-            $pull : {
-                messages : {
-                    _id : new mongoose.Types.ObjectId(messageId)
-                }
-            } 
-        })
+  try {
+    const updatedResult = await UserModel.updateOne(
+      {
+        _id: user._id,
+        "messages._id": new mongoose.Types.ObjectId(messageId),
+      },
+      {
+        $pull: {
+          messages: {
+            _id: new mongoose.Types.ObjectId(messageId),
+          },
+        },
+      }
+    );
 
-        if(updatedResult.modifiedCount === 0){
-            return Response.json({
-                success : false,
-                message : "Message not found or already deleted"
-            },{
-                status : 404
-            })
+    if (updatedResult.modifiedCount === 0) {
+      return Response.json(
+        {
+          success: false,
+          message: "Message not found or already deleted",
+        },
+        {
+          status: 404,
         }
-
-        return Response.json({
-            success : true,
-            message : "Message deleted successfully"
-        },{
-            status : 200
-        })
-    } catch (error) {
-        console.error("Error occured while deleting message",error);
-        return Response.json({
-            success : false,
-            message : "Error occured while deleting message"
-        },{
-            status : 500
-        })
+      );
     }
-    
+
+    return Response.json(
+      {
+        success: true,
+        message: "Message deleted successfully",
+      },
+      {
+        status: 200,
+      }
+    );
+  } catch (error) {
+    console.error("Error occurred while deleting message", error);
+    return Response.json(
+      {
+        success: false,
+        message: "Error occurred while deleting message",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
 }
