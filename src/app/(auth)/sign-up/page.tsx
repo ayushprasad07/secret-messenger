@@ -52,6 +52,10 @@ const SignUp = () => {
 
   useEffect(()=>{
     const checkUsernameUnique = async()=>{
+      if (!username || username.length < 2 || /[^a-zA-Z0-9_]/.test(username)) {
+        setUsernameMessage('');
+        return;
+      }
       setIsCheckingUsername(true);
       setUsernameMessage('');
       try {
